@@ -26,7 +26,7 @@ func fibonacci(n, p, c int, queue chan int) {
 	case 2:
 		queue <- 2
 	case n > 0:
-		queue <- p+c
+		queue <- p + c
 	default:
 		fmt.Errorf("wrong number: %v\n", n)
 	}
