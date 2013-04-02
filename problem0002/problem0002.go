@@ -11,24 +11,38 @@ import (
 	"fmt"
 )
 
-func Fibonacci(n int) chan int {
-	var queue chan int
-	go fibonacci(n, 1, 2, queue)
-	return queue
+const Limit = 4000000
+
+func Fibonacci(c, quit chan int) {
+	x, y := 1, 2
+	for {
+		select {
+		case c <- x:
+			x, y = y, x+y
+		case <-quit:
+			return
+		}
+	}
 }
 
-func fibonacci(n, p, c int, queue chan int) {
-	switch {
-	case 0:
-		return
-	case 1:
-		queue <- 1
-	case 2:
-		queue <- 2
-	case n > 0:
-		queue <- p + c
-	default:
-		fmt.Errorf("wrong number: %v\n", n)
-	}
-	fibonacci(n-1, c, c+p, queue)
+func main() {
+	c := make(chan int)
+	quit := make(chan int)
+
+	sum := 0
+	var value int
+	go func() {
+		for {
+			value = <-c
+			if value < Limit {
+				if value%2 == 0 {
+					sum += value
+				}
+			} else {
+				quit <- 0
+			}
+		}
+	}()
+	Fibonacci(c, quit)
+	fmt.Println(sum)
 }
