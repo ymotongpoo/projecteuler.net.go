@@ -1,3 +1,7 @@
+// A palindromic number reads the same both ways.
+// The largest palindrome made from the product of two 2-digit numbers is 9009 = 91 99.
+//
+// Find the largest palindrome made from the product of two 3-digit numbers.
 package main
 
 import (
@@ -5,6 +9,8 @@ import (
 	"strconv"
 	"unicode/utf8"
 )
+
+const Limit = 1000
 
 func IsPalindrome(n int64) bool {
 	s := strconv.FormatInt(n, 10)
@@ -26,5 +32,14 @@ func IsPalindrome(n int64) bool {
 }
 
 func main() {
-	fmt.Println("spam")
+	max := 0
+	for i := 0; i < Limit; i++ {
+		for j := 0; j < Limit; j++ {
+			n := i * j
+			if IsPalindrome(int64(n)) && max < n {
+				max = n
+			}
+		}
+	}
+	fmt.Println(max)
 }
