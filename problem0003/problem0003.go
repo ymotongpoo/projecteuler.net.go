@@ -33,7 +33,7 @@ func FindLargestFactor(target int64) int64 {
 	ch := make(chan int64) // Create a new channel.
 	go Generate(ch)        // Launch Generate goroutine.
 	var result int64
-	for i := 0; ; i++ {
+	for {
 		prime := <-ch
 		if prime > target {
 			break
