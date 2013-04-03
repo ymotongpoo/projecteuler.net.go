@@ -30,17 +30,35 @@ const Sequence = `
 `
 
 func SeqToSlice(s string) ([]int, error) {
-	str := strings.Replace(s, "\n", "", -1)
-	ret := []int{}
-	for c := range str {
-		n, err := strconv.Atoi(c)
+	lines := strings.Fields(s)
+	str := strings.Join(lines, "")
+	ret := make([]int, len(str))
+	for pos, ch := range str {
+		n, err := strconv.Atoi(string(ch))
 		if err != nil {
 			return nil, err
 		}
-		ret = append(ret, n)
+		ret[pos] = n
 	}
+	return ret, nil
+
 }
 
 func main() {
-	fmt.Println("spam")
+	digits, err := SeqToSlice(Sequence)
+	if err != nil {
+		panic(err)
+	}
+
+	max := 0
+	for i := 0; i < len(digits)-5; i++ {
+		mul := 1
+		for k := 0; k < 5; k++ {
+			mul *= digits[i+k]
+		}
+		if mul > max {
+			max = mul
+		}
+	}
+	fmt.Println(max)
 }
