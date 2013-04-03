@@ -55,7 +55,7 @@ func Pow(x, n int) int {
 func main() {
 	primes := Primes(Limit)
 	factors := make(map[int]int)
-	for i := 2; i < Limit + 1; i++ {
+	for i := 2; i < Limit+1; i++ {
 		number := i
 		for _, p := range primes {
 			count := 0
