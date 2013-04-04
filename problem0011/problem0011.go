@@ -21,10 +21,10 @@
 // 20 69 36 41 72 30 23 88 34 62 99 69 82 67 59 85 74 04 36 16
 // 20 73 35 29 78 31 90 01 74 31 49 71 48 86 81 16 23 57 05 54
 // 01 70 54 71 83 51 54 69 16 92 33 48 61 43 52 01 89 19 67 48
-// 
+//
 // The product of these numbers is 26  63  78  14 = 1788696.
 //
-// What is the greatest product of four adjacent numbers in the same direction 
+// What is the greatest product of four adjacent numbers in the same direction
 // (up, down, left, right, or diagonally) in the 2020 grid?
 package main
 
@@ -77,10 +77,10 @@ func GridToDoubleSlice(s string) [][]int {
 	return data
 }
 
-func ProdHorizontal(grid [][]int, n int) int {
+func ProdHorizontal(grid [][]int, n int, out chan<- int) {
 	max := 0
 	for i := 0; i < len(grid); i++ {
-		for j := 0; j < len(grid)-n; j++ {
+		for j := 0; j < len(grid[i])-n; j++ {
 			prod := 1
 			for k := 0; k < n; k++ {
 				prod *= grid[i][j+k]
@@ -90,13 +90,13 @@ func ProdHorizontal(grid [][]int, n int) int {
 			}
 		}
 	}
-	return max
+	out <- max
 }
 
-func ProdVertical(grid [][]int, n int) int {
+func ProdVertical(grid [][]int, n int, out chan<- int) {
 	max := 0
 	for i := 0; i < len(grid)-n; i++ {
-		for j := 0; j < len(grid); j++ {
+		for j := 0; j < len(grid[i]); j++ {
 			prod := 1
 			for k := 0; k < n; k++ {
 				prod *= grid[i+k][j]
@@ -106,13 +106,13 @@ func ProdVertical(grid [][]int, n int) int {
 			}
 		}
 	}
-	return max
+	out <- max
 }
 
-func ProdLeftCross(grid [][]int, n int) int {
+func ProdLeftCross(grid [][]int, n int, out chan<- int) {
 	max := 0
 	for i := 0; i < len(grid)-n; i++ {
-		for j := 0; j < len(grid)-n; j++ {
+		for j := 0; j < len(grid[i])-n; j++ {
 			prod := 1
 			for k := 0; k < n; k++ {
 				prod *= grid[i+k][j+k]
@@ -122,13 +122,13 @@ func ProdLeftCross(grid [][]int, n int) int {
 			}
 		}
 	}
-	return max
+	out <- max
 }
 
-func ProdRightCross(grid [][]int, n int) int {
+func ProdRightCross(grid [][]int, n int, out chan<- int) {
 	max := 0
 	for i := 0; i < len(grid)-n; i++ {
-		for j := n - 1; j < len(grid); j++ {
+		for j := n - 1; j < len(grid[i]); j++ {
 			prod := 1
 			for k := 0; k < n; k++ {
 				prod *= grid[i+k][j-k]
@@ -138,9 +138,37 @@ func ProdRightCross(grid [][]int, n int) int {
 			}
 		}
 	}
-	return max
+	out <- max
 }
 
 func main() {
-	fmt.Println("gopher")
+	grid := GridToDoubleSlice(Grid)
+	out := make(chan int, 4)
+	quit := make(chan int)
+
+	max := 0
+	go func() {
+		fmt.Println("start") // TODO(ymotongpoo): Why is this needed?
+		for {
+			if len(out) == cap(out) {
+				close(out)
+				break
+			}
+		}
+		for n := range out {
+			if n > max {
+				max = n
+			}
+		}
+		quit <- 0
+	}()
+
+	go ProdHorizontal(grid, 4, out)
+	go ProdVertical(grid, 4, out)
+	go ProdLeftCross(grid, 4, out)
+	go ProdRightCross(grid, 4, out)
+
+	<-quit
+
+	fmt.Println(max)
 }
