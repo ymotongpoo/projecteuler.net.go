@@ -7,12 +7,12 @@ import (
 	"bytes"
 	"fmt"
 	"io/ioutil"
-	"strconv"
+	"math/big"
 )
 
 const DataFile = "data.txt"
 
-func ReadAllNumbers(path string) ([]int64, error) {
+func ReadAllNumbers(path string) ([]*big.Int, error) {
 	data, err := ioutil.ReadFile(path)
 	if err != nil {
 		return nil, err
@@ -20,11 +20,12 @@ func ReadAllNumbers(path string) ([]int64, error) {
 	return BytesToNumbers(data)
 }
 
-func BytesToNumbers(b []byte) ([]int64, error) {
+func BytesToNumbers(b []byte) ([]*big.Int, error) {
 	fields := bytes.Fields(b)
-	result := make([]int64, len(fields))
+	result := make([]*big.Int, len(fields))
 	for i, f := range fields {
-		n, err := strconv.ParseInt(string(f), 10, 64)
+		n := new(big.Int)
+		_, err := fmt.Sscan(string(f), n)
 		if err != nil {
 			return nil, err
 		}
@@ -39,12 +40,12 @@ func Solver() {
 		panic(err)
 	}
 
-	sum := int64(0)
+	sum := big.NewInt(0)
 	for _, n := range nums {
-		sum += n
+		sum.Add(sum, n)
 	}
 
-	numStr := strconv.FormatInt(sum, 10)
+	numStr := sum.String()
 	fmt.Println(numStr[:10])
 }
 

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"math/big"
 	"reflect"
 	"testing"
 )
@@ -11,7 +12,11 @@ func TestReadAllNumbers(t *testing.T) {
 67890
 12345
 `)
-	want := []int64{int64(12345), int64(67890), int64(12345)}
+	want := []*big.Int{
+		big.NewInt(12345),
+		big.NewInt(67890),
+		big.NewInt(12345),
+	}
 	out, err := BytesToNumbers(in)
 	if err != nil {
 		t.Errorf("%v", err)
