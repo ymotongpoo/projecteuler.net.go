@@ -20,4 +20,26 @@ package main
 
 import (
 	"fmt"
+	"math"
 )
+
+func GenPandigital() (generator chan int64, quit chan bool) {
+	pan := int64(987654321)
+	for {
+		if pan == int64(123456789) {
+			quit <- true
+		}
+		generator <- pan
+	}
+	return
+}
+
+func IsConcatPandigital(n int64) bool {
+	log := math.Log10(float64(n))
+	power := int(log)
+
+	for i := power; i > -1; i-- {
+		base := n / int64(math.Pow10(i))
+		// TODO(ymotongpoo): Implement traversal division
+	}
+}
