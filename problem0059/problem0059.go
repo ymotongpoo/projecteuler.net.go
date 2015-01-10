@@ -24,6 +24,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"sort"
 	"strconv"
 )
 
@@ -66,18 +67,15 @@ func decrypt(key []byte, crypted []byte) ([]byte, error) {
 	return decrypted, nil
 }
 
-func minmax(crypted []int) (int, int) {
-	min := 127
-	max := 0
-	for _, c := range crypted {
-		if c < min {
-			min = int(c)
+func frequenceMap(buf []int) map[int]int {
+	frequence := make(map[int]int)
+	for _, b := range buf {
+		if _, ok := frequence[b]; !ok {
+			frequence[b] = 1
 		}
-		if c > max {
-			max = int(c)
-		}
+		frequence[b]++
 	}
-	return min, max
+	return frequence
 }
 
 var path string
@@ -90,6 +88,32 @@ func init() {
 	path = filepath.Join(cwd, CipherFile)
 }
 
+type CharCount struct {
+	char  int
+	count int
+}
+
+func (c CharCount) String() string {
+	return fmt.Sprintf("%d: %d", c.char, c.count)
+}
+
+type ByCount []CharCount
+
+func NewByCount(m map[int]int) ByCount {
+	ret := make([]CharCount, len(m))
+	i := 0
+	for k, v := range m {
+		ret[i].char = k
+		ret[i].count = v
+		i++
+	}
+	return ret
+}
+
+func (c ByCount) Len() int           { return len(c) }
+func (c ByCount) Swap(i, j int)      { c[i], c[j] = c[j], c[i] }
+func (c ByCount) Less(i, j int) bool { return c[i].count > c[j].count }
+
 func main() {
 	file, err := os.Open(path)
 	if err != nil {
@@ -100,6 +124,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	min, max := minmax(crypted)
-	fmt.Println(min, max)
+	byCount := NewByCount(frequenceMap(crypted))
+	sort.Sort(byCount)
+	fmt.Println(byCount)
 }
