@@ -31,3 +31,20 @@ func TestDecrypt(t *testing.T) {
 		t.Errorf("want: %v, out: %v", want, out)
 	}
 }
+
+func TestMinmax(t *testing.T) {
+	in := []byte("ABCDEabcde")
+	wantMin := int('A')
+	wantMax := int('e')
+	ints := make([]int, len(in))
+	for i, c := range in {
+		ints[i] = int(c)
+	}
+	outMin, outMax := minmax(ints)
+	if wantMin != outMin {
+		t.Errorf("want: %v, out: %v", wantMin, outMin)
+	}
+	if wantMax != outMax {
+		t.Errorf("want: %v, out: %v", wantMax, outMax)
+	}
+}

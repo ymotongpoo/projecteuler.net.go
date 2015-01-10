@@ -66,20 +66,40 @@ func decrypt(key []byte, crypted []byte) ([]byte, error) {
 	return decrypted, nil
 }
 
-func main() {
+func minmax(crypted []int) (int, int) {
+	min := 127
+	max := 0
+	for _, c := range crypted {
+		if c < min {
+			min = int(c)
+		}
+		if c > max {
+			max = int(c)
+		}
+	}
+	return min, max
+}
+
+var path string
+
+func init() {
 	cwd, err := os.Getwd()
 	if err != nil {
 		panic(err)
 	}
-	path := filepath.Join(cwd, CipherFile)
+	path = filepath.Join(cwd, CipherFile)
+}
+
+func main() {
 	file, err := os.Open(path)
 	if err != nil {
 		panic(err)
 	}
 	defer file.Close()
-	nums, err := readCipher(file)
+	crypted, err := readCipher(file)
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(nums)
+	min, max := minmax(crypted)
+	fmt.Println(min, max)
 }
