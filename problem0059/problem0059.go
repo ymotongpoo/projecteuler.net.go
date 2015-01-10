@@ -27,12 +27,13 @@ import (
 	"strconv"
 )
 
+// CipherFile is assigned cipher
 const CipherFile = "p059_cipher.txt"
 
-func readCipher(reader io.Reader) ([]byte, error) {
+func readCipher(reader io.Reader) ([]int, error) {
 	var err error
 	br := bufio.NewReader(reader)
-	chars := []byte{}
+	codes := []int{}
 	for err == nil {
 		token, err := br.ReadBytes(',')
 		if err == io.EOF {
@@ -42,10 +43,27 @@ func readCipher(reader io.Reader) ([]byte, error) {
 		if err != nil {
 			return nil, err
 		}
-		c := strconv.Itoa(int(i))
-		chars = append(chars, []byte(c)[0]) // c should be one ascii char.
+		codes = append(codes, int(i))
 	}
-	return chars, nil
+	return codes, nil
+}
+
+func decrypt(key []byte, crypted []byte) ([]byte, error) {
+	if len(key) > 3 {
+		return nil, fmt.Errorf("key is too long (must be 3 chars): current %v (%vchars)", key, len(key))
+	}
+	decrypted := make([]byte, len(crypted))
+	i := 0
+	for len(crypted) > 0 {
+		buf := crypted[:3]
+		buf[0] = crypted[0] ^ key[0]
+		buf[1] = crypted[1] ^ key[1]
+		buf[2] = crypted[2] ^ key[2]
+		copy(decrypted[i:i+3], buf)
+		i += 3
+		crypted = crypted[3:]
+	}
+	return decrypted, nil
 }
 
 func main() {
@@ -59,9 +77,9 @@ func main() {
 		panic(err)
 	}
 	defer file.Close()
-	buf, err := readCipher(file)
+	nums, err := readCipher(file)
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(buf)
+	fmt.Println(nums)
 }
