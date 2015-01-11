@@ -15,3 +15,14 @@ func TestTriangle(t *testing.T) {
 		t.Errorf("want: %v, out: %v", want, out)
 	}
 }
+
+func TestSquare(t *testing.T) {
+	want := []int{1, 4, 9, 16, 25}
+	out := make([]int, len(want))
+	for i := range want {
+		out[i] = square(i + 1)
+	}
+	if !reflect.DeepEqual(want, out) {
+		t.Errorf("want: %v, out: %v", want, out)
+	}
+}
