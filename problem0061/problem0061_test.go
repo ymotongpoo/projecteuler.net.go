@@ -26,3 +26,14 @@ func TestSquare(t *testing.T) {
 		t.Errorf("want: %v, out: %v", want, out)
 	}
 }
+
+func TestPentagonal(t *testing.T) {
+	want := []int{1, 5, 12, 22, 35}
+	out := make([]int, len(want))
+	for i := range want {
+		out[i] = pentagonal(i + 1)
+	}
+	if !reflect.DeepEqual(want, out) {
+		t.Errorf("want: %v, out: %v", want, out)
+	}
+}
