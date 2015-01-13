@@ -40,6 +40,26 @@ func findFourDigits(f func(int) int) []int {
 	}
 }
 
+type Candidate struct {
+	p int // polygonal number
+	i int // index
+}
+
+func next(c Candidate, polygonals [][]int) []Candidate {
+	ret := []Candidate{}
+	for i := range polygonals {
+		if i == c.i {
+			continue
+		}
+		for _, n := range polygonals[i] {
+			if c.p%100 == n/100 {
+				ret = append(ret, Candidate{p: n, i: i})
+			}
+		}
+	}
+	return ret
+}
+
 func main() {
 	polygonals := make([][]int, 6)
 	for i := range polygonals {
@@ -54,4 +74,7 @@ func main() {
 	polygonals[5] = findFourDigits(octagonal)
 
 	// TODO(ymotongpoo): implement cyclic number detection algorithm.
+	for _, p := range polygonals[0] {
+
+	}
 }
