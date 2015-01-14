@@ -24,6 +24,7 @@ func octagonal(n int) int {
 	return 3*n*n - 2*n
 }
 
+// findFourDigits lists up all four digits polygonal numbers.
 func findFourDigits(f func(int) int) []int {
 	ret := []int{}
 	i := 0
@@ -75,6 +76,6 @@ func main() {
 
 	// TODO(ymotongpoo): implement cyclic number detection algorithm.
 	for _, p := range polygonals[0] {
-
+		_ = p
 	}
 }
