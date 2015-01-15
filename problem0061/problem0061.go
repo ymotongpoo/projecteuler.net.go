@@ -41,6 +41,7 @@ func findFourDigits(f func(int) int) []int {
 	}
 }
 
+// Candidate is cyclic polygonal candidate.
 type Candidate struct {
 	p int // polygonal number
 	i int // index
@@ -76,6 +77,7 @@ func main() {
 
 	// TODO(ymotongpoo): implement cyclic number detection algorithm.
 	for _, p := range polygonals[0] {
-		_ = p
+		cs := next(Candidate{p, 0}, polygonals)
+		_ = cs
 	}
 }
