@@ -47,6 +47,7 @@ type Candidate struct {
 	i int // index
 }
 
+// next finds cyclic polygonal candidates of c from polygonals.
 func next(c Candidate, polygonals [][]int) []Candidate {
 	ret := []Candidate{}
 	for i := range polygonals {
