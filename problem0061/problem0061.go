@@ -77,6 +77,7 @@ func main() {
 	polygonals[5] = findFourDigits(octagonal)
 
 	// TODO(ymotongpoo): implement cyclic number detection algorithm.
+	// Came up with implementation using channel and recursion.
 	for _, p := range polygonals[0] {
 		cs := next(Candidate{p, 0}, polygonals)
 		_ = cs
